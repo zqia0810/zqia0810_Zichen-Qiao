@@ -64,3 +64,144 @@ function setup() {
   // Switching to the next window every 500 milliseconds.
   setInterval(updateWindowLights, 500);
 }
+  // Functions for sun position update
+  function updateSunPosition() {
+  let sun = shapes.find(shape => shape instanceof BauhausCircle);
+  sunAngle = (sunAngle + 0.01) % PI; // Increase the angle to control the sun's movement along a semicircular trajectory
+  sun.x = sunCenterX + sunRadius * cos(sunAngle);  
+  sun.y = sunCenterY - sunRadius * sin(sunAngle); 
+}
+
+// Currently lit window
+function updateWindowLights() {
+  // Reset the light status of all windows to false
+  // Only set the current window to be lit
+  windowLights[currentWindow] = true;
+  currentWindow = (currentWindow + 1);
+  if(currentWindow==6)
+  {
+    windowLights.fill(false);
+    currentWindow=0
+  }
+}
+
+// draw() 
+function draw() {
+  background(255);
+
+  // Draw all shapes
+  for (let shape of shapes) {
+    shape.draw();
+    if (shape instanceof BauhausCloud) {
+      shape.move(); // move cloud
+    }
+  }
+
+  // Drawing a building's windows and applying a light-up effect
+  let startX = 200; 
+  let startY = 200; 
+  let windowWidth = 20;
+  let windowHeight = 30;
+  for (let i = 0; i < 5; i++) {
+    fill(windowLights[i] ? color(255, 255, 0) : color(150, 150, 150)); // Yellow for light on, gray for light off
+    noStroke();
+    rect(startX + i * (windowWidth + 10), startY, windowWidth, windowHeight);
+  }
+}
+
+
+
+// BauhausShape class
+class BauhausShape {
+  constructor(x, y, color) {
+    this.x = x;
+    this.y = y;
+    this.color = color;
+  }
+}
+
+// BauhausRect class
+class BauhausRect extends BauhausShape {
+  constructor(x, y, width, height, color) {
+    super(x, y, color);
+    this.width = width;
+    this.height = height;
+  }
+
+  draw() {
+    fill(this.color);
+    noStroke();
+    rect(this.x, this.y, this.width, this.height);
+  }
+}
+
+// BauhausCircle class
+class BauhausCircle extends BauhausShape {
+  constructor(x, y, size, color) {
+    super(x, y, color);
+    this.size = size;
+  }
+
+  draw() {
+    fill(this.color);
+    noStroke();
+    ellipse(this.x, this.y, this.size);
+  }
+}
+
+// BauhausLine class
+class BauhausLine extends BauhausShape {
+  constructor(x, y, length, angle, color, index) {
+    super(x, y+70, color);
+    this.length = length;
+    this.angle = angle/2;
+    this.index = index; 
+  }
+
+  draw() {
+    stroke(this.color);
+    strokeWeight(2);
+    push();
+    //  Controls the up and down movement of lines
+    translate(this.x, this.y + waveAmplitude * sin(frameCount * waveFrequency + this.index)*25); // Each line goes up and down with time
+    rotate(radians(this.angle));
+    line(0, 0, this.length, 0);
+    pop();
+  }
+}
+
+// Cloud class，Use multiple circles to form clouds and add motion effects
+class BauhausCloud extends BauhausShape {
+  constructor(x, y, size, alpha) {
+    super(x, y, color(255, 255, 255, alpha));
+    this.size = size;
+    this.speedX = random(0.2, 1);
+    this.speedY = random(-0.2, 0.2);
+  }
+
+  draw() {
+    noStroke();
+    fill(this.color);
+
+    // Draw the cloud with multiple ellipses
+    ellipse(this.x, this.y, this.size, this.size * 0.5);
+    ellipse(this.x - this.size * 0.4, this.y + this.size * 0.2, this.size * 0.6, this.size * 0.4);
+    ellipse(this.x + this.size * 0.4, this.y + this.size * 0.2, this.size * 0.6, this.size * 0.4);
+    ellipse(this.x - this.size * 0.2, this.y - this.size * 0.2, this.size * 0.5, this.size * 0.3);
+    ellipse(this.x + this.size * 0.2, this.y - this.size * 0.2, this.size * 0.5, this.size * 0.3);
+  }
+
+  move() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+
+    // If the cloud moves out of the left edge of the canvas, reset its position to the right edge
+    if (this.x > width + this.size) {
+      this.x = -this.size;
+    }
+    // If the cloud moves out of the top or bottom edge of the canvas, reverse its moving direction
+    if (this.y > height / 2 || this.y < 0) {
+      this.speedY *= -1;
+    }
+  }
+}
