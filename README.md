@@ -11,8 +11,8 @@ I use time to drive the personal part of the code. This time-driven approach all
 ## Inspirations
 The assignment was inspired by two gifs. the first shows the sun rising and setting in a semi-circular trajectory, with the colors of the sky changing as the sun rises and sets. The buildings of the city show a brown outline. I was inspired by the movement of the sun in this image, and its combination with the buildings gave the scene more depth. The second image shows the golden ripples created by the sun's light on the water. The shimmering water creates an unparalleled sense of natural immersion in the scene. Both images inspire me, both the curved path of the sun's movement and the brown silhouettes of the buildings and the golden ripples of the water. The combination of these elements can give my project a more natural and aesthetic feel and provide an immersive experience for the viewer.
 
-![Sunrise and Sunset](readmeImages/Sunrise_and_Sunset.gif)
-![sparkling water](readmeImages/sparkling_water.gif)
+![Sunrise and Sunset](assets/Sunrise_and_Sunset.gif)
+![sparkling water](assets/sparkling_water.gif)
 
 
 ## Technical Explanation
